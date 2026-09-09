@@ -76,12 +76,14 @@ export default function Dashboard({ user, theme, onThemeChange, hideAmounts }) {
 function DashboardButton({ children, theme, secondary = false, onClick }) {
   const palette = theme === 'sakura'
     ? { tint: secondary ? '#fff7f8' : '#e8a0b2', textColor: secondary ? '#632f40' : '#ffffff', lineColor: '#fff7f8', baseColor: '#b96b82' }
+    : theme === 'aurora'
+    ? { tint: secondary ? '#f1c5ff' : '#f1c5ff', textColor: '#ffffff', lineColor: '#ffffff', baseColor: '#8f4db3' }
     : theme === 'gradient'
     ? { tint: secondary ? '#ffffff' : '#fff4a8', textColor: secondary ? '#ffffff' : '#10233d', lineColor: '#ffffff', baseColor: '#64748b' }
     : theme === 'midnight'
       ? { tint: secondary ? '#ffffff' : '#66b6ca', textColor: secondary ? '#f5f7fa' : '#102333', lineColor: '#d7fbff', baseColor: '#426b78' }
       : { tint: secondary ? '#ffffff' : '#176b87', textColor: secondary ? '#17212f' : '#ffffff', lineColor: '#d2f7ff', baseColor: '#0f5269' }
-  return <SpecularButton type="button" size="sm" radius={8} tint={palette.tint} tintOpacity={secondary ? 0.12 : 0.72} blur={8} textColor={palette.textColor} lineColor={palette.lineColor} baseColor={palette.baseColor} intensity={1.05} shineSize={12} shineFade={35} thickness={1.1} speed={0.35} followMouse proximity={220} onClick={onClick}>{children}</SpecularButton>
+  return <SpecularButton type="button" size="sm" radius={8} tint={palette.tint} tintOpacity={theme === 'aurora' && secondary ? 0.42 : secondary ? 0.12 : 0.72} blur={8} textColor={palette.textColor} lineColor={palette.lineColor} baseColor={palette.baseColor} intensity={1.05} shineSize={12} shineFade={35} thickness={1.1} speed={0.35} followMouse proximity={220} onClick={onClick}>{children}</SpecularButton>
 }
 
 function CategoryIcon({ category }) {
