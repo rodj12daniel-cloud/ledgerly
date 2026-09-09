@@ -57,10 +57,19 @@
 .source-browser .source-card small { color: var(--muted); font-size: 9px; }
 .auth-aside .brand img, .auth-card .brand img { width: 190px; }
 .legal-top .brand img { width: 160px; }
-.loading-screen img { width: min(280px, 70vw); animation: logo-in .5s ease both; }
+.loading-screen { background: #f5f7fa; }
+.loading-brand { position: relative; display: grid; place-items: center; width: min(280px, 70vw); padding: 32px 24px 24px; }
+.loading-brand img { position: relative; z-index: 1; width: 100%; animation: logo-in .6s cubic-bezier(.2,.8,.2,1) both, logo-breathe 2.4s ease-in-out .6s infinite; }
+.loading-halo { position: absolute; width: 132px; height: 132px; border: 1px solid rgba(201,149,53,.24); border-top-color: #c99535; border-radius: 50%; box-shadow: 0 0 34px rgba(201,149,53,.12); animation: halo-spin 2.6s linear infinite; }
+.loading-progress { position: absolute; right: 28%; bottom: 5px; left: 28%; height: 2px; overflow: hidden; border-radius: 999px; background: #dfe5ec; }
+.loading-progress::after { content: ''; display: block; width: 42%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, transparent, #c99535, transparent); animation: loading-sweep 1.15s ease-in-out infinite; }
 @media (max-width: 820px) { .sidebar .brand img { width: 39px; height: 39px; object-fit: cover; object-position: left; } }
 @media (max-width: 600px) { .sidebar .brand img { width: 34px; height: 34px; } .auth-aside .brand img, .auth-card .brand img { width: 155px; } .legal-top .brand img { width: 130px; } }
 @keyframes logo-in { from { opacity: 0; transform: translateY(5px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes logo-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
+@keyframes halo-spin { to { transform: rotate(360deg); } }
+@keyframes loading-sweep { from { transform: translateX(-180%); } to { transform: translateX(280%); } }
+@media (prefers-reduced-motion: reduce) { .loading-brand img, .loading-halo, .loading-progress::after { animation: none; } }
 
 /* Premium fintech visual system */
 :root, :root[data-theme='sunny'] { --bg: #f5f7fa; --surface: #ffffff; --surface-2: #f0f3f7; --ink: #17212f; --muted: #697586; --line: #dfe5ec; --brand: #176b87; --brand-dark: #0f5269; --accent: #c99535; --danger: #bd4c4c; --shadow: 0 8px 24px rgba(23, 33, 47, .06); }
