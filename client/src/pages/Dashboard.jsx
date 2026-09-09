@@ -6,7 +6,7 @@ import WalletCard from '../components/WalletCard'
 import useExchangeRates from '../hooks/useExchangeRates'
 import SpecularButton from '../components/SpecularButton'
 
-const colors = ['#d97757', '#3c7a89', '#bc8b2d', '#758467', '#8b6f8b', '#b56576', '#567d8d', '#989898']
+const colors = ['#e4572e', '#087e8b', '#e0a100', '#4f772d', '#7b2cbf', '#d63384', '#0077b6', '#c2410c']
 const themes = [['sunny', 'Sunny'], ['midnight', 'Midnight'], ['gradient', 'Gradient'], ['sakura', 'Sakura'], ['aurora', 'Aurora']]
 
 function money(value, currency, hidden) {

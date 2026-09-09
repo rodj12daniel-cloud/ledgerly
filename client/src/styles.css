@@ -506,8 +506,8 @@ h1, h2, h3, .brand, .wallet-brand, .template-word { font-family: 'DM Sans', 'Seg
 .chart-toggle { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-2); }
 .chart-toggle button { min-width: 42px; padding: 5px 8px; border: 0; border-radius: 5px; background: transparent; color: var(--muted); font-size: 10px; font-weight: 800; cursor: pointer; }
 .chart-toggle button:hover, .chart-toggle button.active { background: var(--surface); color: var(--brand); box-shadow: 0 2px 5px rgba(23, 33, 47, .08); }
-.category-pie-layout { display: grid; grid-template-columns: 150px 1fr; align-items: center; gap: 22px; }
-.category-pie { width: 150px; height: 150px; border: 10px solid var(--surface); border-radius: 50%; box-shadow: 0 0 0 1px var(--line), 0 8px 18px rgba(23, 33, 47, .1); }
+.category-pie-layout { display: grid; grid-template-columns: 180px 1fr; align-items: center; gap: 22px; }
+.category-pie { width: 180px; height: 180px; border: 12px solid var(--surface); border-radius: 50%; box-shadow: 0 0 0 1px var(--line), 0 10px 22px rgba(23, 33, 47, .16); transform: translateZ(0); }
 .category-legend { display: grid; gap: 11px; }
 .category-legend-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--ink); font-size: 12px; }
 .category-legend-item span { display: flex; align-items: center; gap: 8px; min-width: 0; }
