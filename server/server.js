@@ -18,7 +18,7 @@ app.use(cors({
     callback(null, isLocalFrontend || configuredFrontend)
   }
 }))
-app.use(express.json())
+app.use(express.json({ limit: '4mb' }))
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }))
 app.use('/api/auth', authRoutes)
 app.use('/api', userRoutes)
@@ -27,6 +27,7 @@ app.use('/api/wallets', walletRoutes)
 app.use('/api/rates', rateRoutes)
 app.use((error, _req, res, _next) => {
   console.error(error)
+  if (error.type === 'entity.too.large') return res.status(413).json({ message: 'Request is too large. Choose an image under 2 MB.' })
   res.status(500).json({ message: 'Something went wrong on the server.' })
 })
 
