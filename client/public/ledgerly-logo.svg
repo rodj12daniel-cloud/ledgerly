@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 150" role="img" aria-labelledby="title desc">
+  <title id="title">Ledgerly</title>
+  <desc id="desc">Gold bird mark and Ledgerly wordmark</desc>
+  <g fill="#e5c072">
+    <path d="M80 112c28-12 45-34 57-66 17 17 22 36 7 55-14 18-38 25-64 25Z"/>
+    <path d="M125 73c12-24 23-34 39-42 9-5 22-2 27 7 6 10-2 19-13 20-9 1-17-3-21-11-12 9-19 18-24 26Z"/>
+    <path d="M101 119c-13 17-24 25-43 29-7 1-11-5-7-10l23-26 27 7Z"/>
+    <path d="M129 126h72v10h-72zM91 139h94v6H91zM204 23h4v122h-4z"/>
+    <circle cx="169" cy="37" r="3.5" fill="#151515"/>
+    <path d="m191 42 17 4-17 7z"/>
+  </g>
+  <text x="232" y="102" fill="#f5f0e4" font-family="Georgia, 'Times New Roman', serif" font-size="57" letter-spacing="3">LEDGERLY</text>
+</svg>
