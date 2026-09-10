@@ -32,7 +32,7 @@ export default function UserProfileCard({ user }) {
       <div className="user-profile-number">•••• &nbsp;•••• &nbsp;•••• &nbsp;{user.currency || 'PHP'}</div>
       <div className="user-profile-bottom"><div className="user-profile-holder"><small>CARDHOLDER NAME</small><strong>{user.name}</strong></div><div><small>ACCOUNT TYPE</small><strong>PERSONAL</strong></div></div>
     </article>
-    <button type="button" className="profile-card-download" onClick={downloadCard} disabled={downloading}>{downloading ? 'Preparing image...' : 'Download card'}</button>
+    <button type="button" className="profile-card-download red-action" onClick={downloadCard} disabled={downloading}>{downloading ? 'Preparing image...' : 'Download card'}</button>
     <div className="profile-card-details"><strong>{user.name}</strong><span>{user.email}</span><small>Display currency: {user.currency}</small></div>
   </section>
 }

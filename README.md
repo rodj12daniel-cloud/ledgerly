@@ -74,6 +74,22 @@ npm run dev --prefix client
 
 The frontend runs at `http://localhost:5173` and the API runs at `http://localhost:5000`.
 
+## Deploying
+
+Deploy the `server` and `client` as separate services. Set these environment variables on the deployed services:
+
+```env
+# server
+MONGODB_URI=...
+JWT_SECRET=...
+CLIENT_URL=https://your-frontend-domain.example
+
+# client (set before building)
+VITE_API_URL=https://your-api-domain.example/api
+```
+
+`CLIENT_URL` may contain multiple comma-separated frontend origins. A production client build without `VITE_API_URL` falls back to `http://localhost:5000/api`, which cannot work from a deployed website.
+
 ## API overview
 
 - `POST /api/auth/register`

@@ -4,7 +4,7 @@ import { api } from '../api'
 import WalletForm from '../components/WalletForm'
 import WalletCard from '../components/WalletCard'
 import useExchangeRates from '../hooks/useExchangeRates'
-import SpecularButton from '../components/SpecularButton'
+import LedgerlyActionButton from '../components/LedgerlyActionButton'
 
 const colors = ['#e4572e', '#087e8b', '#e0a100', '#4f772d', '#7b2cbf', '#d63384', '#0077b6', '#c2410c']
 const themes = [['sunny', 'Sunny'], ['midnight', 'Midnight'], ['gradient', 'Gradient'], ['sakura', 'Sakura'], ['aurora', 'Aurora']]
@@ -70,7 +70,7 @@ export default function Dashboard({ user, theme, onThemeChange, hideAmounts }) {
     </header>
     {error && <div className="alert error">{error}</div>}
     <section className="wallet-section">
-      <div className="section-heading"><div><span className="eyebrow">Your money</span><h2>Total wallet balance</h2></div><DashboardButton theme={theme} secondary onClick={() => setWalletEditor({ new: true })}>+ Add wallet</DashboardButton></div>
+      <div className="section-heading"><div><span className="eyebrow">Your money</span><h2>Total wallet balance</h2></div><DashboardButton theme={theme} secondary onClick={() => setWalletEditor({ new: true })}>Add wallet</DashboardButton></div>
       {wallets.length === 0 ? <div className="wallet-empty"><strong>Add your first wallet</strong><span>Track a manual balance like BPI, Cash, or Savings.</span><DashboardButton theme={theme} onClick={() => setWalletEditor({ new: true })}>Add a wallet</DashboardButton></div> : <><div className="wallet-total"><span className="wallet-total-value">{money(totalBalance, user.currency, hideAmounts)}</span><small>across {wallets.length} wallet{wallets.length === 1 ? '' : 's'}</small></div><div className="wallet-grid">{wallets.map(wallet => <WalletCard key={wallet._id} wallet={wallet} user={user} balance={convert(wallet.balance, wallet.currency || 'PHP')} hideAmount={hideAmounts} onEdit={() => setWalletEditor(wallet)} onRemove={() => removeWallet(wallet._id)} onColorChange={color => changeWalletColor(wallet, color)} />)}</div></>}
     </section>
     <section className="source-summary"><div className="section-heading"><div><span className="eyebrow">Where it went</span><h2>Spending by account</h2></div><Link to="/analytics">View analytics</Link></div><div className="source-summary-grid">{accountSpending.length === 0 ? <span className="muted">Add an expense to see account spending.</span> : accountSpending.slice(0, 4).map(([account, amount]) => <div className="source-summary-item" key={account}><span className="source-summary-dot" /> <div><strong>{account}</strong><small>{money(amount, user.currency, hideAmounts)} spent</small></div></div>)}</div></section>
@@ -80,17 +80,8 @@ export default function Dashboard({ user, theme, onThemeChange, hideAmounts }) {
   </>
 }
 
-function DashboardButton({ children, theme, secondary = false, onClick }) {
-  const palette = theme === 'sakura'
-    ? { tint: secondary ? '#fff7f8' : '#e8a0b2', textColor: secondary ? '#632f40' : '#ffffff', lineColor: '#fff7f8', baseColor: '#b96b82' }
-    : theme === 'aurora'
-    ? { tint: secondary ? '#f1c5ff' : '#f1c5ff', textColor: '#ffffff', lineColor: '#ffffff', baseColor: '#8f4db3' }
-    : theme === 'gradient'
-    ? { tint: secondary ? '#ffffff' : '#fff4a8', textColor: secondary ? '#ffffff' : '#10233d', lineColor: '#ffffff', baseColor: '#64748b' }
-    : theme === 'midnight'
-      ? { tint: secondary ? '#ffffff' : '#66b6ca', textColor: secondary ? '#f5f7fa' : '#102333', lineColor: '#d7fbff', baseColor: '#426b78' }
-      : { tint: secondary ? '#ffffff' : '#176b87', textColor: secondary ? '#17212f' : '#ffffff', lineColor: '#d2f7ff', baseColor: '#0f5269' }
-  return <SpecularButton type="button" size="sm" radius={8} tint={palette.tint} tintOpacity={theme === 'aurora' && secondary ? 0.42 : secondary ? 0.12 : 0.72} blur={8} textColor={palette.textColor} lineColor={palette.lineColor} baseColor={palette.baseColor} intensity={1.05} shineSize={12} shineFade={35} thickness={1.1} speed={0.35} followMouse proximity={220} onClick={onClick}>{children}</SpecularButton>
+function DashboardButton({ children, secondary = false, onClick }) {
+  return <LedgerlyActionButton secondary={secondary} onClick={onClick}>{children}</LedgerlyActionButton>
 }
 
 function CategoryIcon({ category }) {
