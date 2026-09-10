@@ -7,6 +7,11 @@ const types = [
   ['digital-wallet', 'Digital Wallet', 'Device wallet spending', '303942']
 ]
 
+const cardColors = [
+  ['Red', '#C81D35'], ['Blue', '#1769AA'], ['Green', '#2E7D32'], ['Gold', '#D39B2A'], ['Purple', '#7048A8'],
+  ['Black', '#20252B'], ['White', '#E9EEF2'], ['Orange', '#D66A28'], ['Teal', '#168B91'], ['Pink', '#C65383']
+]
+
 const sources = {
   bank: [
     ['BPI', '#B31B1B', '/assets/brand-logos/BPI.png'],
@@ -43,15 +48,50 @@ export default function MoneySourcePicker({ value, onChange, wallets = [] }) {
   const [filter, setFilter] = useState('all')
   const options = useMemo(() => {
     const builtIn = sources[selectedType] || []
-    const custom = wallets.filter(wallet => wallet.moneyType === selectedType && !builtIn.some(option => option[0] === (wallet.account || wallet.label))).map(wallet => [wallet.account || wallet.label, wallet.accountColor || '#667085', wallet.accountLogo || ''])
+    const custom = wallets
+      .filter(wallet => wallet.moneyType === selectedType && !builtIn.some(option => option[0] === (wallet.account || wallet.label)))
+      .map(wallet => [wallet.account || wallet.label, wallet.accountColor || '#667085', wallet.accountLogo || ''])
     return [...builtIn, ...custom]
   }, [selectedType, wallets])
   const visibleOptions = options.filter(([account]) => account.toLowerCase().includes(search.toLowerCase()))
+
   function chooseType(moneyType) {
-    const next = { moneyType, account: moneyType === 'cash' ? 'Cash' : '', accountColor: types.find(item => item[0] === moneyType)?.[3] ? `#${types.find(item => item[0] === moneyType)[3]}` : '#667085', accountLogo: '' }
-    onChange(next)
+    const defaultColor = types.find(item => item[0] === moneyType)?.[3]
+    onChange({ moneyType, account: moneyType === 'cash' ? 'Cash' : '', accountColor: defaultColor ? `#${defaultColor}` : '#667085', accountLogo: '' })
   }
-  function chooseAccount([account, accountColor, accountLogo]) { onChange({ account, accountColor, accountLogo }) }
+
+  function chooseAccount([account, accountColor, accountLogo]) {
+    onChange({ account, accountColor, accountLogo })
+  }
+
+  function chooseColor(accountColor) {
+    onChange({ accountColor })
+  }
+
   const isCustom = value.account === 'Other Bank' || value.account === 'Other E-wallet'
-  return <div className="money-source-picker"><div className="source-label-row"><span className="form-section-label">1. Money type</span><span className="source-helper">Where the expense came from</span></div><div className="money-type-grid">{types.map(([id, label, description, color]) => <button type="button" key={id} className={`money-type-card ${selectedType === id ? 'selected' : ''}`} style={{ '--source-accent': `#${color}` }} onClick={() => chooseType(id)}><span className="money-type-icon">{id === 'cash' ? '$' : id === 'bank' ? '▤' : id === 'ewallet' ? '◈' : '⌁'}</span><strong>{label}</strong><small>{description}</small></button>)}</div>{selectedType === 'cash' ? <div className="cash-confirm"><span className="source-check">✓</span><div><strong>Cash</strong><small>Cash is selected automatically.</small></div></div> : <><div className="source-label-row account-label"><span className="form-section-label">2. Choose account</span><span className="source-helper">Select a source</span></div><div className="source-browser"><label className="source-search"><span>⌕</span><input value={search} onChange={event => setSearch(event.target.value)} placeholder="Search banks & wallets..." /></label><div className="source-tabs">{[['all', 'All'], ['bank', 'Banks'], ['digital-wallet', 'Digital Wallets'], ['ewallet', 'E-Wallets']].map(([id, label]) => <button type="button" className={filter === id ? 'active' : ''} key={id} onClick={() => { setFilter(id); if (id !== 'all') chooseType(id) }}>{label}</button>)}</div><div className="source-group-title"><strong>{selectedType === 'bank' ? 'Banks' : selectedType === 'ewallet' ? 'E-Wallets' : 'Digital wallets'}</strong><span>{visibleOptions.length}</span></div><div className="source-card-grid">{visibleOptions.map(option => <button type="button" key={option[0]} className={`source-card ${value.account === option[0] ? 'selected' : ''}`} style={{ '--source-accent': option[1] }} onClick={() => chooseAccount(option)}>{option[2] ? <img src={option[2]} alt="" onError={event => { event.currentTarget.style.display = 'none' }} /> : <span className="source-placeholder">{option[0].slice(0, 1)}</span>}<span>{option[0]}</span><small>{selectedType === 'bank' ? 'Bank' : selectedType === 'ewallet' ? 'E-Wallet' : 'Digital Wallet'}</small>{value.account === option[0] && <b>✓</b>}</button>)}</div></div>{isCustom && <div className="custom-source-fields"><label>Custom account name<input value={value.customAccount || ''} onChange={event => onChange({ account: event.target.value, customAccount: event.target.value, accountLogo: '' })} placeholder="e.g. Family bank" /></label><label>Accent color<input type="color" value={value.accountColor || '#667085'} onChange={event => onChange({ accountColor: event.target.value })} /></label></div>}</>}</div>
+
+  return <div className="money-source-picker">
+    <div className="source-label-row"><span className="form-section-label">1. Money type</span><span className="source-helper">Where the expense came from</span></div>
+    <div className="money-type-grid">
+      {types.map(([id, label, description, color]) => <button type="button" key={id} className={`money-type-card ${selectedType === id ? 'selected' : ''}`} style={{ '--source-accent': `#${color}` }} onClick={() => chooseType(id)}>
+        <span className="money-type-icon">{id === 'cash' ? '$' : id === 'bank' ? 'B' : id === 'ewallet' ? 'E' : 'D'}</span><strong>{label}</strong><small>{description}</small>
+      </button>)}
+    </div>
+    {selectedType !== 'cash' && <div className="card-color-picker"><div className="source-label-row"><span className="form-section-label">Card color</span><span className="source-helper">Choose a visual style</span></div><div className="card-color-options">{cardColors.map(([name, color]) => <button type="button" key={name} className={`card-color-option ${value.accountColor?.toLowerCase() === color.toLowerCase() ? 'selected' : ''}`} style={{ '--swatch': color }} onClick={() => chooseColor(color)} aria-label={`${name} card color`} title={name}><i></i><span>{name}</span></button>)}</div></div>}
+    {selectedType === 'cash' ? <div className="cash-confirm">
+      <span className="source-check">₱</span><div><strong>Cash voucher</strong><small>The selected color will be used for this cash card.</small></div>
+    </div> : <>
+      <div className="source-label-row account-label"><span className="form-section-label">2. Choose account</span><span className="source-helper">Select a source</span></div>
+      <div className="source-browser">
+        <label className="source-search"><span>?</span><input value={search} onChange={event => setSearch(event.target.value)} placeholder="Search banks & wallets..." /></label>
+        <div className="source-tabs">{[['all', 'All'], ['bank', 'Banks'], ['digital-wallet', 'Digital Wallets'], ['ewallet', 'E-Wallets']].map(([id, label]) => <button type="button" className={filter === id ? 'active' : ''} key={id} onClick={() => { setFilter(id); if (id !== 'all') chooseType(id) }}>{label}</button>)}</div>
+        <div className="source-group-title"><strong>{selectedType === 'bank' ? 'Banks' : selectedType === 'ewallet' ? 'E-Wallets' : 'Digital wallets'}</strong><span>{visibleOptions.length}</span></div>
+        <div className="source-card-grid">{visibleOptions.map(option => <button type="button" key={option[0]} className={`source-card ${value.account === option[0] ? 'selected' : ''}`} style={{ '--source-accent': option[1] }} onClick={() => chooseAccount(option)}>
+          {option[2] ? <img src={option[2]} alt="" onError={event => { event.currentTarget.style.display = 'none' }} /> : <span className="source-placeholder">{option[0].slice(0, 1)}</span>}
+          <span>{option[0]}</span><small>{selectedType === 'bank' ? 'Bank' : selectedType === 'ewallet' ? 'E-Wallet' : 'Digital Wallet'}</small>{value.account === option[0] && <b>OK</b>}
+        </button>)}</div>
+      </div>
+      {isCustom && <div className="custom-source-fields"><label>Custom account name<input value={value.customAccount || ''} onChange={event => onChange({ account: event.target.value, customAccount: event.target.value, accountLogo: '' })} placeholder="e.g. Family bank" /></label><label>Accent color<input type="color" value={value.accountColor || '#667085'} onChange={event => onChange({ accountColor: event.target.value })} /></label></div>}
+    </>}
+  </div>
 }

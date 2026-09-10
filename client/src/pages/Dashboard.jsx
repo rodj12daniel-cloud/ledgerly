@@ -56,6 +56,13 @@ export default function Dashboard({ user, theme, onThemeChange, hideAmounts }) {
     } catch (err) { setError(err.message) }
   }
 
+  async function changeWalletColor(wallet, accountColor) {
+    try {
+      const data = await api(`/wallets/${wallet._id}`, { method: 'PUT', body: JSON.stringify({ ...wallet, accountColor }) })
+      setWallets(current => current.map(item => item._id === data._id ? data : item))
+    } catch (err) { setError(err.message) }
+  }
+
   return <>
     <header className="page-header">
       <div><span className="eyebrow">{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</span><h1>Hey, {user.name.split(' ')[0]}.</h1><p className="muted">Here is how much you have across your wallets.</p></div>
@@ -64,7 +71,7 @@ export default function Dashboard({ user, theme, onThemeChange, hideAmounts }) {
     {error && <div className="alert error">{error}</div>}
     <section className="wallet-section">
       <div className="section-heading"><div><span className="eyebrow">Your money</span><h2>Total wallet balance</h2></div><DashboardButton theme={theme} secondary onClick={() => setWalletEditor({ new: true })}>+ Add wallet</DashboardButton></div>
-      {wallets.length === 0 ? <div className="wallet-empty"><strong>Add your first wallet</strong><span>Track a manual balance like BPI, Cash, or Savings.</span><DashboardButton theme={theme} onClick={() => setWalletEditor({ new: true })}>Add a wallet</DashboardButton></div> : <><div className="wallet-total"><span className="wallet-total-value">{money(totalBalance, user.currency, hideAmounts)}</span><small>across {wallets.length} wallet{wallets.length === 1 ? '' : 's'}</small></div><div className="wallet-grid">{wallets.map(wallet => <WalletCard key={wallet._id} wallet={wallet} user={user} balance={convert(wallet.balance, wallet.currency || 'PHP')} hideAmount={hideAmounts} onEdit={() => setWalletEditor(wallet)} onRemove={() => removeWallet(wallet._id)} />)}</div></>}
+      {wallets.length === 0 ? <div className="wallet-empty"><strong>Add your first wallet</strong><span>Track a manual balance like BPI, Cash, or Savings.</span><DashboardButton theme={theme} onClick={() => setWalletEditor({ new: true })}>Add a wallet</DashboardButton></div> : <><div className="wallet-total"><span className="wallet-total-value">{money(totalBalance, user.currency, hideAmounts)}</span><small>across {wallets.length} wallet{wallets.length === 1 ? '' : 's'}</small></div><div className="wallet-grid">{wallets.map(wallet => <WalletCard key={wallet._id} wallet={wallet} user={user} balance={convert(wallet.balance, wallet.currency || 'PHP')} hideAmount={hideAmounts} onEdit={() => setWalletEditor(wallet)} onRemove={() => removeWallet(wallet._id)} onColorChange={color => changeWalletColor(wallet, color)} />)}</div></>}
     </section>
     <section className="source-summary"><div className="section-heading"><div><span className="eyebrow">Where it went</span><h2>Spending by account</h2></div><Link to="/analytics">View analytics</Link></div><div className="source-summary-grid">{accountSpending.length === 0 ? <span className="muted">Add an expense to see account spending.</span> : accountSpending.slice(0, 4).map(([account, amount]) => <div className="source-summary-item" key={account}><span className="source-summary-dot" /> <div><strong>{account}</strong><small>{money(amount, user.currency, hideAmounts)} spent</small></div></div>)}</div></section>
     <section className="stats-grid"><div className="stat-card accent"><span className="stat-label">Total expenses</span><strong>{money(totalSpent, user.currency, hideAmounts)}</strong><span className="stat-note">Across {expenses.length} transactions</span></div><div className="stat-card"><span className="stat-label">Transactions</span><strong>{expenses.length}</strong><span className="stat-note">All recorded expenses</span></div><div className="stat-card"><span className="stat-label">Average expense</span><strong>{money(expenses.length ? totalSpent / expenses.length : 0, user.currency, hideAmounts)}</strong><span className="stat-note">Per transaction</span></div></section>

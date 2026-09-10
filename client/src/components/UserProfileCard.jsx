@@ -25,9 +25,9 @@ export default function UserProfileCard({ user }) {
 
   return <section className="profile-card-panel">
     <div className="profile-card-heading"><div><span className="eyebrow">Identity</span><h2>User profile</h2></div></div>
-    <article ref={cardRef} className="user-profile-card">
+    <article ref={cardRef} className="user-profile-card" style={{ '--profile-card-color': user.cardColor || '#1769AA' }}>
       <div className="user-profile-lines" />
-      <div className="user-profile-top"><span className="user-profile-chip" /><span className="user-profile-bank">LEDGERLY</span></div>
+      <div className="user-profile-top"><span className="user-profile-chip" /><img className="user-profile-logo" src="/assets/images/vector.png" alt="Ledgerly" /></div>
       <div className="user-profile-avatar">{user.profilePicture ? <img src={user.profilePicture} alt="" /> : initials(user.name)}</div>
       <div className="user-profile-number">•••• &nbsp;•••• &nbsp;•••• &nbsp;{user.currency || 'PHP'}</div>
       <div className="user-profile-bottom"><div className="user-profile-holder"><small>CARDHOLDER NAME</small><strong>{user.name}</strong></div><div><small>ACCOUNT TYPE</small><strong>PERSONAL</strong></div></div>

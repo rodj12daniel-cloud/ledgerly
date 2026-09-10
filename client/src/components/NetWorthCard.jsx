@@ -42,11 +42,11 @@ export default function NetWorthCard({ user }) {
   return <section className="net-worth-panel">
     <div className="net-worth-heading"><div><span className="eyebrow">Statement</span><h2>Net worth check</h2></div><button className="net-worth-flip" type="button" onClick={() => setFlipped(value => !value)}>{flipped ? 'Show front' : 'View breakdown'}</button></div>
     {error && <div className="alert error">{error}</div>}
-    <div ref={cardRef} className={`net-worth-card ${flipped ? 'is-flipped' : ''}`}>
+    <div ref={cardRef} className={`net-worth-card ${flipped ? 'is-flipped' : ''}`} style={{ '--check-card-color': user.cardColor || '#1769AA' }}>
       <div className="net-worth-face net-worth-front">
-        <div className="check-company">LEDGERLY</div>
+        <div className="check-company"><img src="/assets/images/vector.png" alt="Ledgerly" /><span>LEDGERLY</span></div>
         <div className="check-date"><small>DATE</small><span>{issued}</span></div>
-        <div className="check-payee"><strong>{user.name}</strong></div>
+        <div className="check-payee"><div className="check-identity">{user.profilePicture ? <img src={user.profilePicture} alt="" /> : <span>{user.name.charAt(0).toUpperCase()}</span>}<strong>{user.name}</strong></div></div>
         <div className="check-amount"><span>{user.currency}</span><strong>{money(total, user.currency)}</strong></div>
         <div className="check-amount-words">Personal net worth statement</div>
         <div className="check-memo"><small>MEMO</small><span>Ledgerly account summary</span></div>
