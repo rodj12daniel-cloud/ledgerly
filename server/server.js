@@ -10,15 +10,20 @@ import rateRoutes from './routes/rates.js'
 
 const app = express()
 const port = process.env.PORT || 5000
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
+  .split(',')
+  .map(origin => origin.trim().replace(/\/$/, ''))
+  .filter(Boolean)
 
 app.use(cors({
   origin: (origin, callback) => {
     const isLocalFrontend = !origin || /^http:\/\/localhost:\d+$/.test(origin)
-    const configuredFrontend = origin === (process.env.CLIENT_URL || 'http://localhost:5173')
+    const configuredFrontend = allowedOrigins.includes(origin)
     callback(null, isLocalFrontend || configuredFrontend)
   }
 }))
 app.use(express.json({ limit: '4mb' }))
+app.get('/api', (_req, res) => res.json({ status: 'ok', service: 'Ledgerly API' }))
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }))
 app.use('/api/auth', authRoutes)
 app.use('/api', userRoutes)
