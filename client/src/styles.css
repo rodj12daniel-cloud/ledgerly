@@ -460,6 +460,11 @@ h1, h2, h3, .brand, .wallet-brand, .template-word { font-family: 'DM Sans', 'Seg
 .auth-card input, .auth-card select { color: #17212f; background: rgba(255,255,255,.82); }
 .auth-card input::placeholder { color: #64748b; opacity: 1; }
 .auth-card .auth-switch a, .auth-card .legal-links a { color: #176b87; font-weight: 700; }
+.auth-aside .showcase-brand, .auth-card .showcase-brand { display: inline-flex; align-items: center; gap: 7px; color: #ffffff; font: 600 16px 'DM Sans', sans-serif; letter-spacing: 0; }
+.auth-aside .showcase-brand img, .auth-card .showcase-brand img { width: 35px; height: 35px; object-fit: contain; }
+.auth-card .showcase-brand { color: #17212f; }
+.auth-aside .showcase-brand span, .auth-card .showcase-brand span { display: none; }
+.auth-aside .showcase-brand img, .auth-card .showcase-brand img { width: 48px; height: 48px; }
 .avatar { position: relative; flex: 0 0 31px; overflow: hidden; }
 .avatar img { display: block; width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: cover; border-radius: 50%; }
 .profile-picture-field { display: flex; align-items: center; gap: 14px; margin-bottom: 17px; }
@@ -1367,6 +1372,44 @@ button:disabled { transition: opacity .2s ease; }
 :root .app-shell { overflow: visible; }
 .wallet-grid, .expense-card-list { overflow: visible; }
 .wallet-card:hover, .expense-card:hover { position: relative; z-index: 2; }
+
+/* Readability layer for the authenticated app. */
+.app-shell { font-size: 15px; }
+.app-shell .muted { font-size: 14px; }
+.app-shell .eyebrow, .app-shell .sidebar-label { font-size: 12px; }
+.app-shell .nav-link { font-size: 14px; }
+.app-shell .manual-notice { font-size: 13px; }
+.app-shell .manual-notice strong { font-size: 14px; }
+.app-shell label, .app-shell input, .app-shell select, .app-shell textarea { font-size: 14px; }
+.app-shell input, .app-shell select { min-height: 44px; }
+.app-shell .button { font-size: 14px; }
+.app-shell .stat-label, .app-shell .stat-note { font-size: 13px; }
+.app-shell .expense-info small, .app-shell .expense-card-title small, .app-shell .expense-card-meta { font-size: 12px; }
+.app-shell .expense-card-heading strong, .app-shell .expense-card-heading > span { font-size: 15px; }
+.app-shell .expense-card-details span { font-size: 12px; }
+.app-shell .expense-card-details b { font-size: 9px; }
+.app-shell .source-summary-item strong { font-size: 14px; }
+.app-shell .source-summary-item small, .app-shell .amount-stack small { font-size: 12px; }
+.app-shell .analytics-summary span, .app-shell .accounts-summary span { font-size: 12px; }
+.app-shell .analytics-summary small { font-size: 12px; }
+.app-shell .analytics-category-heading, .app-shell .analytics-legend-item { font-size: 13px; }
+.app-shell .analytics-category-row > small, .app-shell .trend-labels, .app-shell .trend-highlights { font-size: 12px; }
+.app-shell .largest-item strong { font-size: 14px; }
+.app-shell .largest-item small, .app-shell .analytics-table-wrap td small { font-size: 11px; }
+.app-shell .analytics-table-wrap th, .app-shell .analytics-table-wrap td { font-size: 12px; }
+.app-shell .sidebar-footer .amount-toggle, .app-shell .sidebar-footer .theme-toggle { font-size: 15px; }
+.app-shell .sidebar-footer .user-copy strong { font-size: 14px; }
+.app-shell .sidebar-footer .user-copy small { font-size: 12px; }
+.app-shell .ledgerly-chat-message { font-size: 13px; }
+.app-shell .ledgerly-chat-prompts button, .app-shell .ledgerly-chat-panel form button { font-size: 12px; }
+@media (max-width: 600px) {
+	.app-shell { font-size: 14px; }
+	.app-shell .muted { font-size: 13px; }
+	.app-shell .nav-link { font-size: 0; }
+	.app-shell .expense-card-heading strong, .app-shell .expense-card-heading > span { font-size: 14px; }
+	.app-shell .expense-card-details span { font-size: 11px; }
+	.app-shell .analytics-table-wrap table { min-width: 540px; }
+}
 :root[data-theme='midnight'] .expense-card-actions button:last-child,
 :root[data-theme='dark'] .expense-card-actions button:last-child,
 :root[data-theme='aurora'] .expense-card-actions button:last-child { background: #b94352 !important; color: #ffffff !important; box-shadow: 0 4px 12px rgba(239,91,105,.28); }
