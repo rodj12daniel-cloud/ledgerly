@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Cell, Pie, PieChart as RechartsPieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import { api } from '../api'
 import useExchangeRates from '../hooks/useExchangeRates'
 
@@ -18,7 +19,7 @@ function Donut({ categories, total, currency, hidden }) {
     offset += percent
     return segment
   })
-  return <div className="analytics-donut-wrap"><div className="analytics-donut" style={{ background: segments.length ? `conic-gradient(${segments.map(item => `${item.color} ${item.offset}% ${item.offset + item.percent}%`).join(', ')})` : 'var(--surface-2)' }}><div><strong>{hidden ? '****' : shortMoney(total, currency)}</strong><span>Total spent</span></div></div><div className="analytics-legend">{segments.map(item => <div className="analytics-legend-item" key={item.category}><i style={{ background: item.color }} /><span>{item.category}</span><strong>{item.percent.toFixed(0)}%</strong></div>)}</div></div>
+  return <div className="analytics-donut-wrap"><div className="analytics-donut-chart"><ResponsiveContainer width="100%" height={190} initialDimension={{ width: 190, height: 190 }}><RechartsPieChart><Tooltip formatter={value => [hidden ? '****' : money(value, currency), 'Spent']} contentStyle={{ border: '1px solid var(--line)', borderRadius: 8, background: 'var(--surface)', color: 'var(--ink)' }} /><Pie isAnimationActive={false} data={segments} dataKey="amount" nameKey="category" startAngle={-270} endAngle={-630} stroke="none" innerRadius={52} outerRadius={78} paddingAngle={1}>{segments.map(item => <Cell key={item.category} fill={item.color} />)}</Pie></RechartsPieChart></ResponsiveContainer><div className="analytics-donut-center"><strong>{hidden ? '****' : shortMoney(total, currency)}</strong><span>Total spent</span></div></div><div className="analytics-legend">{segments.map(item => <div className="analytics-legend-item" key={item.category}><i style={{ background: item.color }} /><span>{item.category}</span><strong>{item.percent.toFixed(0)}%</strong></div>)}</div></div>
 }
 
 function SpendingTrend({ points, currency, hidden }) {

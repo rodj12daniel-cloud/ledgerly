@@ -6,7 +6,7 @@ import WalletCard from '../components/WalletCard'
 import useExchangeRates from '../hooks/useExchangeRates'
 import LedgerlyActionButton from '../components/LedgerlyActionButton'
 
-const colors = ['#e4572e', '#087e8b', '#e0a100', '#4f772d', '#7b2cbf', '#d63384', '#0077b6', '#c2410c']
+const colors = ['#147a91', '#e76f51', '#f2b134', '#5a9a57', '#7b61a8', '#d1495b', '#2a9d8f', '#52677d']
 const themes = [['sunny', 'Sunny'], ['midnight', 'Midnight'], ['gradient', 'Gradient'], ['sakura', 'Sakura'], ['aurora', 'Aurora']]
 
 function money(value, currency, hidden) {

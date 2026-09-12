@@ -16,6 +16,7 @@ export default function NetWorthCard({ user }) {
   const [wallets, setWallets] = useState([])
   const [flipped, setFlipped] = useState(false)
   const [error, setError] = useState('')
+  const [downloadError, setDownloadError] = useState('')
   const cardRef = useRef(null)
 
   useEffect(() => { api('/wallets').then(setWallets).catch(err => setError(err.message)) }, [])
@@ -27,13 +28,16 @@ export default function NetWorthCard({ user }) {
 
   async function downloadCheck() {
     if (!cardRef.current) return
+    setDownloadError('')
     cardRef.current.classList.add('is-exporting')
     try {
+      await document.fonts?.ready
       const canvas = await html2canvas(cardRef.current, { scale: 3, backgroundColor: '#fffdf8', useCORS: true })
-      const link = document.createElement('a')
-      link.download = 'ledgerly-net-worth-check.png'
-      link.href = canvas.toDataURL('image/png')
-      link.click()
+      const blob = await new Promise((resolve, reject) => canvas.toBlob(value => value ? resolve(value) : reject(new Error('Unable to create image')), 'image/png'))
+      const link = document.createElement('a'); const url = URL.createObjectURL(blob)
+      link.download = 'ledgerly-net-worth-check.png'; link.href = url; link.style.display = 'none'; document.body.appendChild(link); link.click(); link.remove(); window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+    } catch (err) {
+      setDownloadError('The check could not be downloaded. Please try again.')
     } finally {
       cardRef.current.classList.remove('is-exporting')
     }
@@ -61,6 +65,6 @@ export default function NetWorthCard({ user }) {
         <div className="net-worth-total"><span>Total net worth</span><strong>{money(total, user.currency)}</strong></div>
       </div>
     </div>
-    <div className="net-worth-actions"><SpecularButton className="red-action" size="sm" radius={8} tint="#176b87" tintOpacity={0.72} blur={8} textColor="#ffffff" lineColor="#d2f7ff" baseColor="#0f5269" intensity={1.05} shineSize={12} shineFade={35} thickness={1.1} speed={0.35} followMouse proximity={220} onClick={downloadCheck}>Download check</SpecularButton></div>
+    <div className="net-worth-actions"><SpecularButton className="red-action" size="sm" radius={8} tint="#176b87" tintOpacity={0.72} blur={8} textColor="#ffffff" lineColor="#d2f7ff" baseColor="#0f5269" intensity={1.05} shineSize={12} shineFade={35} thickness={1.1} speed={0.35} followMouse proximity={220} onClick={downloadCheck}>Download check</SpecularButton></div>{downloadError && <div className="alert error">{downloadError}</div>}
   </section>
 }
