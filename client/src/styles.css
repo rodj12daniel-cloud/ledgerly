@@ -2026,3 +2026,33 @@ button:disabled { transition: opacity .2s ease; }
 	.app-shell .sidebar-footer .logout-button:hover { width: 38px !important; border-radius: 8px !important; }
 }
 
+/* Theme-aware desktop rail: preserve contrast across every workspace theme. */
+@media (min-width: 821px) {
+	.app-shell .sidebar,
+	.app-shell:hover .sidebar,
+	.app-shell .sidebar:hover,
+	.app-shell .sidebar:focus-within { background: var(--surface) !important; border-color: var(--line) !important; box-shadow: var(--shadow) !important; }
+	.app-shell .sidebar .brand { border-color: var(--line) !important; background: var(--surface-2) !important; }
+	.app-shell .sidebar .nav-link,
+	.app-shell .sidebar .nav-link:hover,
+	.app-shell .sidebar .nav-link:focus { color: var(--muted) !important; }
+	.app-shell .sidebar .nav-link:hover { background: var(--surface-2) !important; color: var(--brand) !important; }
+	.app-shell .sidebar .nav-link.active { background: color-mix(in srgb, var(--brand) 16%, var(--surface)) !important; color: var(--brand) !important; }
+	.app-shell .sidebar-footer .amount-toggle,
+	.app-shell .sidebar-footer .theme-toggle,
+	.app-shell .sidebar-footer .user-block,
+	.app-shell .sidebar-footer .logout { color: var(--muted) !important; }
+	.app-shell .sidebar-footer .amount-toggle:hover,
+	.app-shell .sidebar-footer .theme-toggle:hover,
+	.app-shell .sidebar-footer .user-block:hover { background: var(--surface-2) !important; color: var(--brand) !important; }
+	:root[data-theme='gradient'] .app-shell .sidebar { background: rgba(13, 27, 52, .9) !important; border-color: rgba(255,255,255,.24) !important; }
+	:root[data-theme='gradient'] .app-shell .sidebar .brand { background: rgba(255,255,255,.1) !important; border-color: rgba(255,255,255,.24) !important; }
+	:root[data-theme='gradient'] .app-shell .sidebar .nav-link:hover { background: rgba(255,255,255,.12) !important; color: #fff4a8 !important; }
+	:root[data-theme='gradient'] .app-shell .sidebar .nav-link.active { background: rgba(255,244,168,.18) !important; color: #fff4a8 !important; }
+	:root[data-theme='sakura'] .app-shell .sidebar .nav-link.active { background: #f9e3e9 !important; color: #9d4f68 !important; }
+	:root[data-theme='aurora'] .app-shell .sidebar { background: rgba(18,13,29,.92) !important; border-color: rgba(220,182,239,.22) !important; }
+	:root[data-theme='aurora'] .app-shell .sidebar .brand { background: rgba(230,167,255,.12) !important; border-color: rgba(220,182,239,.25) !important; }
+	:root[data-theme='aurora'] .app-shell .sidebar .nav-link:hover { background: rgba(230,167,255,.14) !important; color: #f1c5ff !important; }
+	:root[data-theme='aurora'] .app-shell .sidebar .nav-link.active { background: rgba(230,167,255,.22) !important; color: #f1c5ff !important; }
+}
+
