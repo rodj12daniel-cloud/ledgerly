@@ -1725,6 +1725,29 @@ button:disabled { transition: opacity .2s ease; }
 .loading-screen { background: var(--bg); color: var(--ink); }
 .loading-brand { display: flex; flex-direction: column; align-items: center; justify-content: center; width: min(280px, 80vw); padding: 28px 24px 22px; }
 .loading-brand img { width: min(220px, 70vw); height: auto; }
+.loading-screen { position: relative; isolation: isolate; overflow: hidden; }
+.loading-background { position: absolute; z-index: 0; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.loading-brand { position: relative; z-index: 1; }
+.loading-indicator { display: inline-flex; align-items: center; gap: 7px; width: auto; height: auto; }
+.loading-indicator::before, .loading-indicator::after { display: none; }
+.loading-indicator i { display: block; width: 8px; height: 8px; border-radius: 50%; background: var(--brand); animation: loading-indicator-dot 1s ease-in-out infinite; }
+.loading-indicator i:nth-child(2) { animation-delay: .15s; background: var(--accent); }
+.loading-indicator i:nth-child(3) { animation-delay: .3s; background: var(--brand-dark); }
+.loading-indicator-sm { width: 36px; height: 36px; }
+.loading-indicator-lg { width: 64px; height: 64px; }
+.loading-indicator-line-spinner { width: 52px; height: 8px; gap: 4px; border: 0; border-radius: 0; }
+.loading-indicator-line-spinner::before, .loading-indicator-line-spinner::after { display: none; }
+.loading-indicator-line-spinner i { width: 8px; height: 8px; border-radius: 2px; animation: loading-indicator-line 1s ease-in-out infinite; }
+.loading-indicator-line-spinner i:nth-child(2) { animation-delay: .15s; }
+.loading-indicator-line-spinner i:nth-child(3) { animation-delay: .3s; }
+.loading-indicator-line-spinner.loading-indicator-sm { width: 40px; height: 6px; }
+.loading-indicator-line-spinner.loading-indicator-sm i { width: 6px; height: 6px; }
+.loading-indicator-line-spinner.loading-indicator-lg { width: 68px; height: 10px; }
+.loading-indicator-line-spinner.loading-indicator-lg i { width: 10px; height: 10px; }
+@keyframes loading-indicator-spin { to { transform: rotate(360deg); } }
+@keyframes loading-indicator-pulse { 0%, 100% { opacity: .55; transform: scale(.8); } 50% { opacity: 1; transform: scale(1); } }
+@keyframes loading-indicator-dot { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+@keyframes loading-indicator-line { 0%, 100% { opacity: .35; transform: scaleY(.7); } 50% { opacity: 1; transform: scaleY(1.35); } }
 .loading { --speed-of-animation: .9s; --gap: 6px; --first-color: #176b87; --second-color: #2f8a8a; --third-color: #c99535; --fourth-color: #e19b74; --fifth-color: #66b6ca; display: flex; align-items: center; justify-content: center; width: 100px; height: 70px; gap: var(--gap); }
 .loading span { width: 4px; height: 50px; border-radius: 4px; background: var(--first-color); animation: ledgerly-scale var(--speed-of-animation) ease-in-out infinite; }
 .loading span:nth-child(2) { background: var(--second-color); animation-delay: -.8s; }
@@ -1749,6 +1772,20 @@ button:disabled { transition: opacity .2s ease; }
 @keyframes ledgerly-circle-bounce { 0% { top: 60px; height: 5px; border-radius: 50px 50px 25px 25px; transform: scaleX(1.7); } 40% { height: 20px; border-radius: 50%; transform: scaleX(1); } 100% { top: 0; } }
 @keyframes ledgerly-shadow-bounce { 0% { transform: scaleX(1.5); } 40% { opacity: .7; transform: scaleX(1); } 100% { opacity: .4; transform: scaleX(.2); } }
 @media (prefers-reduced-motion: reduce) { .loading-bounce .circle, .loading-bounce .shadow { animation: none; } .loading-bounce .circle { top: 0; } }
+
+/* Keep wallet cards compact and paired on phone screens. */
+@media (max-width: 600px) {
+	.app-shell .wallet-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; width: 100%; overflow-x: hidden; }
+	.app-shell .wallet-card { width: 100%; min-width: 0; max-width: none; height: auto; min-height: 0; aspect-ratio: 1.586 / 1; padding: clamp(10px, 3vw, 18px); }
+	.app-shell .wallet-card-top { min-height: 0; height: auto; }
+	.app-shell .wallet-card > strong { width: 100%; min-height: 0; margin-top: clamp(6px, 2vw, 10px); font-size: clamp(9px, 2.7vw, 13px); line-height: 1.1; letter-spacing: .2px; }
+	.app-shell .wallet-balance-label { margin-top: clamp(6px, 2vw, 14px); font-size: clamp(7px, 2vw, 10px); letter-spacing: .2px; }
+	.app-shell .wallet-balance { margin-top: 2px; font-size: clamp(14px, 4.5vw, 23px); }
+	.app-shell .wallet-menu { padding: 2px 0 3px 3px; font-size: clamp(13px, 4vw, 17px); letter-spacing: 2px; }
+	.app-shell .wallet-network { right: 4.5%; bottom: 5%; }
+	.app-shell .wallet-mastercard { width: clamp(30px, 10vw, 62px); height: auto; aspect-ratio: 62 / 38; }
+	.app-shell .wallet-mastercard i { width: 56%; height: auto; aspect-ratio: 1; }
+}
 
 /* Expenses dashboard */
 .expenses-header { align-items: center; }
