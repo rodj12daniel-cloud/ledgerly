@@ -1386,6 +1386,15 @@ button:disabled { transition: opacity .2s ease; }
 	.app-shell .wallet-card { width: min(100%, 380px); padding: 18px; }
 }
 
+@media (max-width: 600px) {
+	.landing-showcase { min-height: 100dvh; padding: 12px; }
+	.landing-showcase .landing-background-lines { min-height: 100dvh; }
+	.landing-showcase .background-lines-content { min-height: 100dvh; }
+	.landing-showcase .background-lines-svg { position: fixed; z-index: 0; width: 100vw; height: 100dvh; }
+	.landing-showcase .showcase-hero { flex: 0 0 auto; min-height: 100dvh; padding: 24px 0 50px; }
+	.landing-showcase .showcase-actions { width: min(100%, 300px); }
+}
+
 .auth-waves { position: absolute; inset: 0; z-index: 0; opacity: .95; background: #160b1e; }
 .auth-waves .background-lines { width: 100%; height: 100%; }
 .auth-waves::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(46,8,35,.1), rgba(30,7,26,.42)); pointer-events: none; }
