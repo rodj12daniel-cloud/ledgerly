@@ -1325,6 +1325,7 @@ button:disabled { transition: opacity .2s ease; }
 /* Responsive finishing pass: preserve the desktop surface while giving phones
    deliberate navigation, card proportions, and viewport-safe dialogs. */
 .modal-backdrop { padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); overflow-y: auto; }
+.modal-backdrop:has(.expense-form) { z-index: 120; }
 .modal { width: min(490px, calc(100vw - 32px)); max-width: 100%; min-width: 0; max-height: calc(100dvh - 32px); overflow-y: auto; }
 .modal:has(.expense-form) { width: min(490px, calc(100vw - 32px)); }
 .modal:has(.expense-form) .modal-actions { position: sticky; bottom: -26px; margin: 26px -26px -26px; padding: 14px 26px 26px; background: var(--surface); }
@@ -1779,23 +1780,28 @@ button:disabled { transition: opacity .2s ease; }
 	.app-shell .wallet-section .section-heading .button { width: auto; }
 	.app-shell .dashboard-wallet-cards { margin: 0 0 28px; padding: 0 4px; border: 0; background: transparent; }
 	.app-shell .dashboard-wallet-cards .wallet-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; width: 100%; overflow: visible; }
-	.app-shell .dashboard-wallet-cards .wallet-card { width: 100%; min-width: 0; max-width: none; height: auto; min-height: 0; aspect-ratio: 1.586 / 1; padding: clamp(12px, 3.5vw, 18px); }
-	.app-shell .dashboard-wallet-cards .wallet-card-top { width: 100%; height: 30px; min-height: 30px; align-items: flex-start; }
-	.app-shell .dashboard-wallet-cards .wallet-brand-mark,
-	.app-shell .dashboard-wallet-cards .wallet-card.bank-wallet .wallet-brand-mark { width: clamp(42px, 14vw, 64px); height: 30px; flex: 0 0 clamp(42px, 14vw, 64px); }
-	.app-shell .dashboard-wallet-cards .wallet-brand-mark img,
-	.app-shell .dashboard-wallet-cards .wallet-card.bank-wallet .wallet-brand-mark img { width: 100%; height: 30px; object-fit: contain; object-position: left top; }
-	.app-shell .dashboard-wallet-cards .wallet-card > strong { width: 100%; min-height: 0; margin-top: 8px; overflow: hidden; font-size: clamp(9px, 2.8vw, 13px); line-height: 1.1; letter-spacing: .2px; text-overflow: ellipsis; white-space: nowrap; }
-	.app-shell .dashboard-wallet-cards .wallet-balance-label { margin-top: clamp(8px, 2.5vw, 14px); font-size: clamp(7px, 2vw, 10px); letter-spacing: .2px; }
-	.app-shell .dashboard-wallet-cards .wallet-balance { margin-top: 2px; overflow: hidden; font-size: clamp(14px, 4.5vw, 23px); line-height: 1.05; text-overflow: ellipsis; white-space: nowrap; }
-	.app-shell .dashboard-wallet-cards .wallet-menu { padding: 2px 0 3px 3px; font-size: clamp(13px, 4vw, 17px); }
-	.app-shell .dashboard-wallet-cards .wallet-network { right: 4.5%; bottom: 5%; }
-	.app-shell .dashboard-wallet-cards .wallet-mastercard { width: clamp(30px, 10vw, 62px); height: auto; aspect-ratio: 62 / 38; }
-	.app-shell .dashboard-wallet-cards .wallet-mastercard i { width: 56%; height: auto; aspect-ratio: 1; }
 	.app-shell { padding-bottom: 112px; }
 	.app-shell .sidebar { background: rgba(255,255,255,.98); border-color: rgba(23,33,47,.2); box-shadow: 0 12px 30px rgba(15,23,42,.22); }
 	.app-shell .sidebar .nav-link { color: #536273; }
 	.app-shell .sidebar .nav-link:hover, .app-shell .sidebar .nav-link.active { background: #dceef3; color: #176b87; }
+	.app-shell .ledgerly-chat { bottom: calc(112px + env(safe-area-inset-bottom)); }
+	.app-shell .main-content:has(.modal-backdrop) { padding-bottom: 24px; }
+	.app-shell .modal-backdrop:has(.expense-form) { z-index: 120; }
+}
+
+@media (max-width: 600px) {
+	.analytics-header { margin-bottom: 16px; }
+	.analytics-header h1 { font-size: 28px; }
+	.analytics-filters { gap: 10px; margin-bottom: 12px; padding: 14px; }
+	.analytics-filters > div { grid-column: 1 / -1; }
+	.analytics-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 12px; }
+	.analytics-summary > div { min-height: 92px; padding: 13px; }
+	.analytics-summary strong { margin-top: 6px; font-size: 17px; }
+	.analytics-main-grid, .analytics-secondary-grid, .analytics-tertiary-grid { gap: 12px; margin-top: 12px; }
+	.analytics-main-grid .panel, .analytics-secondary-grid .panel, .analytics-tertiary-grid .panel { padding: 15px; }
+	.analytics-main-grid .panel-heading, .analytics-secondary-grid .panel-heading, .analytics-tertiary-grid .panel-heading { margin-bottom: 12px; }
+	.analytics-donut-wrap { gap: 14px; }
+	.analytics-donut-chart { transform: scale(.9); transform-origin: top center; margin-bottom: -18px; }
 }
 
 /* Keep wallet cards compact and paired on phone screens. */
