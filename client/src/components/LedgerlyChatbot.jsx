@@ -89,11 +89,18 @@ function findFaq(question) {
 
 function getReply(question, expenses, wallets, user, hidden) {
   const normalized = question.toLowerCase()
-  const faqReply = findFaq(question)
-  if (faqReply) return faqReply
   if (/^(hi|hello|hey|good morning|good afternoon|good evening)\b/.test(normalized)) return `Hi ${user.name.split(' ')[0]}. Ask me about your spending, wallets, or how to use Ledgerly.`
   if (normalized.includes('help') || normalized.includes('what can i ask')) return 'Ask about your total spending, top category, latest or largest expense, monthly spending, wallet balances, or any Ledgerly feature.'
-  if (!expenses.length) return 'You do not have any expenses yet. Add a record from the Expenses page and I can help you find patterns.'
+  if (normalized.includes('wallet') || normalized.includes('balance') || normalized.includes('account')) {
+    if (!wallets.length) return 'You do not have any wallets yet. Add one from Accounts or the dashboard to track a balance.'
+    const walletTotal = wallets.reduce((sum, wallet) => sum + Number(wallet.balance || 0), 0)
+    return `You have ${wallets.length} wallet${wallets.length === 1 ? '' : 's'} with a combined recorded balance of ${formatMoney(walletTotal, user.currency, hidden)}.`
+  }
+  const asksForSpending = normalized.includes('month') || normalized.includes('spent') || normalized.includes('spending') || normalized.includes('expense') || normalized.includes('top category') || normalized.includes('largest') || normalized.includes('biggest') || normalized.includes('recent') || normalized.includes('latest')
+  if (!expenses.length) {
+    if (asksForSpending) return 'You do not have any expenses yet. Add a record from the Expenses page and I can help you find patterns.'
+    return findFaq(question) || 'I can help explain Ledgerly or answer questions about your recorded spending.'
+  }
   const total = expenses.reduce((sum, item) => sum + Number(item.amount || 0), 0)
   const grouped = expenses.reduce((all, item) => { all[item.category] = (all[item.category] || 0) + Number(item.amount || 0); return all }, {})
   const topCategory = Object.entries(grouped).sort((first, second) => second[1] - first[1])[0]
@@ -101,17 +108,12 @@ function getReply(question, expenses, wallets, user, hidden) {
   const largest = [...expenses].sort((first, second) => Number(second.amount) - Number(first.amount))[0]
   const now = new Date()
   const monthTotal = expenses.filter(item => { const date = new Date(item.date); return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear() }).reduce((sum, item) => sum + Number(item.amount || 0), 0)
-  if (normalized.includes('wallet') || normalized.includes('balance') || normalized.includes('account')) {
-    if (!wallets.length) return 'You do not have any wallets yet. Add one from Accounts or the dashboard to track a balance.'
-    const walletTotal = wallets.reduce((sum, wallet) => sum + Number(wallet.balance || 0), 0)
-    return `You have ${wallets.length} wallet${wallets.length === 1 ? '' : 's'} with a combined recorded balance of ${formatMoney(walletTotal, user.currency, hidden)}.`
-  }
   if (normalized.includes('top') || normalized.includes('category')) return `${topCategory[0]} is your top category at ${formatMoney(topCategory[1], user.currency, hidden)}.`
   if (normalized.includes('month')) return `You have spent ${formatMoney(monthTotal, user.currency, hidden)} this month across your recorded expenses.`
   if (normalized.includes('largest') || normalized.includes('biggest')) return `${largest.description} is your largest expense at ${formatMoney(largest.amount, largest.currency || user.currency, hidden)}.`
   if (normalized.includes('recent') || normalized.includes('latest')) return `Your latest expense is ${latest.description}, recorded on ${new Date(latest.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}.`
   if (normalized.includes('total') || normalized.includes('spent') || normalized.includes('much')) return `Your recorded spending totals ${formatMoney(total, user.currency, hidden)} across ${expenses.length} expenses.`
-  return 'I can help explain Ledgerly or answer questions about your recorded spending.'
+  return findFaq(question) || 'I can help explain Ledgerly or answer questions about your recorded spending.'
 }
 
 export default function LedgerlyChatbot({ user, hideAmounts }) {
