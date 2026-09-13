@@ -556,6 +556,7 @@ h1, h2, h3, .brand, .wallet-brand, .template-word { font-family: 'DM Sans', 'Seg
 	}
 	.sidebar .brand, .sidebar .sidebar-label, .sidebar-footer .theme-toggle, .sidebar-footer .user-block, .sidebar-footer .logout { display: none; }
 	.sidebar nav { width: 100%; height: 48px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
+	.sidebar-nav-group { display: contents; }
 	.sidebar nav a.nav-link, .sidebar nav a.nav-link:hover { width: auto; height: 48px; min-height: 48px; padding: 0; display: grid; place-items: center; transform: none; transition: none; font-size: 0; }
 	.sidebar nav a.nav-link .nav-icon { width: 22px; height: 22px; flex: 0 0 22px; }
 	.sidebar nav a.nav-link .nav-icon svg { width: 22px; height: 22px; stroke-width: 2; }
