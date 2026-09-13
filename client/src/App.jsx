@@ -11,7 +11,7 @@ import Legal from './pages/Legal'
 import Accounts from './pages/Accounts'
 import Analytics from './pages/Analytics'
 import Landing from './pages/Landing'
-import { LoadingIndicator } from '@/components/application/loading-indicator/loading-indicator'
+import LoadingAnimation from './components/LoadingAnimation'
 
 function HomePage({ user, theme, onThemeChange, hideAmounts, onLogout, onToggleAmounts }) {
   return <Layout user={user} theme={theme} setTheme={onThemeChange} onLogout={onLogout} hideAmounts={hideAmounts} onToggleAmounts={onToggleAmounts}><Dashboard user={user} theme={theme} onThemeChange={onThemeChange} hideAmounts={hideAmounts} /></Layout>
@@ -30,6 +30,6 @@ export default function App() {
     try { setUser(await api('/me', { method: 'PUT', body: JSON.stringify({ preferredTheme: nextTheme }) })) } catch { setTheme(user.preferredTheme || 'sunny') }
   }
   function logout() { setUser(null) }
-  if (loading) return <div className="loading-screen" aria-label="Loading Ledgerly" role="status"><LoadingIndicator type="line-spinner" size="md" /></div>
+  if (loading) return <div className="loading-screen" aria-label="Loading Ledgerly" role="status"><div className="loading-background" aria-hidden="true"><LoadingAnimation /></div></div>
   return <Routes><Route path="/" element={user ? <HomePage user={user} theme={theme} onThemeChange={changeTheme} hideAmounts={hideAmounts} onLogout={logout} onToggleAmounts={() => setHideAmounts(value => !value)} /> : <Landing />} /><Route path="/login" element={user ? <Navigate to="/" replace /> : <Auth mode="login" onLogin={setUser} />} /><Route path="/register" element={user ? <Navigate to="/" replace /> : <Auth mode="register" onLogin={setUser} />} /><Route path="/privacy" element={<Legal type="privacy" user={user} />} /><Route path="/terms" element={<Legal type="terms" user={user} />} /><Route element={<ProtectedRoute user={user} />}><Route element={<Layout user={user} theme={theme} setTheme={changeTheme} onLogout={logout} hideAmounts={hideAmounts} onToggleAmounts={() => setHideAmounts(value => !value)} />}><Route path="/expenses" element={<Expenses user={user} hideAmounts={hideAmounts} />} /><Route path="/accounts" element={<Accounts user={user} hideAmounts={hideAmounts} />} /><Route path="/analytics" element={<Analytics user={user} hideAmounts={hideAmounts} />} /><Route path="/settings" element={<Settings user={user} onUpdate={setUser} theme={theme} onThemeChange={changeTheme} />} /></Route></Route><Route path="*" element={<Navigate to={user ? '/' : '/'} state={{ from: location.pathname }} replace />} /></Routes>
 }
