@@ -73,6 +73,7 @@ const faqEntries = [
 ]
 
 const faqWords = new Set('a an and are can do does for how i is me my of on the to what where which with you your'.split(' '))
+const CHAT_REPLY_DELAY = 5000
 function tokens(value) { return value.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(word => word && !faqWords.has(word)) }
 function findFaq(question) {
   const questionTokens = new Set(tokens(question))
@@ -86,10 +87,12 @@ function findFaq(question) {
   return bestScore >= .5 ? best : null
 }
 
-function getReply(question, expenses, user, hidden) {
+function getReply(question, expenses, wallets, user, hidden) {
   const normalized = question.toLowerCase()
   const faqReply = findFaq(question)
   if (faqReply) return faqReply
+  if (/^(hi|hello|hey|good morning|good afternoon|good evening)\b/.test(normalized)) return `Hi ${user.name.split(' ')[0]}. Ask me about your spending, wallets, or how to use Ledgerly.`
+  if (normalized.includes('help') || normalized.includes('what can i ask')) return 'Ask about your total spending, top category, latest or largest expense, monthly spending, wallet balances, or any Ledgerly feature.'
   if (!expenses.length) return 'You do not have any expenses yet. Add a record from the Expenses page and I can help you find patterns.'
   const total = expenses.reduce((sum, item) => sum + Number(item.amount || 0), 0)
   const grouped = expenses.reduce((all, item) => { all[item.category] = (all[item.category] || 0) + Number(item.amount || 0); return all }, {})
@@ -98,6 +101,11 @@ function getReply(question, expenses, user, hidden) {
   const largest = [...expenses].sort((first, second) => Number(second.amount) - Number(first.amount))[0]
   const now = new Date()
   const monthTotal = expenses.filter(item => { const date = new Date(item.date); return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear() }).reduce((sum, item) => sum + Number(item.amount || 0), 0)
+  if (normalized.includes('wallet') || normalized.includes('balance') || normalized.includes('account')) {
+    if (!wallets.length) return 'You do not have any wallets yet. Add one from Accounts or the dashboard to track a balance.'
+    const walletTotal = wallets.reduce((sum, wallet) => sum + Number(wallet.balance || 0), 0)
+    return `You have ${wallets.length} wallet${wallets.length === 1 ? '' : 's'} with a combined recorded balance of ${formatMoney(walletTotal, user.currency, hidden)}.`
+  }
   if (normalized.includes('top') || normalized.includes('category')) return `${topCategory[0]} is your top category at ${formatMoney(topCategory[1], user.currency, hidden)}.`
   if (normalized.includes('month')) return `You have spent ${formatMoney(monthTotal, user.currency, hidden)} this month across your recorded expenses.`
   if (normalized.includes('largest') || normalized.includes('biggest')) return `${largest.description} is your largest expense at ${formatMoney(largest.amount, largest.currency || user.currency, hidden)}.`
@@ -110,12 +118,20 @@ export default function LedgerlyChatbot({ user, hideAmounts }) {
   const [open, setOpen] = useState(false)
   const [panelMounted, setPanelMounted] = useState(false)
   const [expenses, setExpenses] = useState([])
+  const [wallets, setWallets] = useState([])
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState([{ role: 'assistant', text: `Hi ${user.name.split(' ')[0]}. I can help you understand your Ledgerly spending.` }])
   const [loading, setLoading] = useState(false)
   const closeTimer = useRef(null)
-  useEffect(() => { api('/expenses').then(setExpenses).catch(() => setExpenses([])) }, [])
-  useEffect(() => () => window.clearTimeout(closeTimer.current), [])
+  const replyTimer = useRef(null)
+  const busyRef = useRef(false)
+  useEffect(() => {
+    Promise.allSettled([api('/expenses'), api('/wallets')]).then(([expenseResult, walletResult]) => {
+      if (expenseResult.status === 'fulfilled') setExpenses(expenseResult.value)
+      if (walletResult.status === 'fulfilled') setWallets(walletResult.value)
+    })
+  }, [])
+  useEffect(() => () => { window.clearTimeout(closeTimer.current); window.clearTimeout(replyTimer.current) }, [])
   function togglePanel() {
     window.clearTimeout(closeTimer.current)
     if (open) {
@@ -128,14 +144,16 @@ export default function LedgerlyChatbot({ user, hideAmounts }) {
   }
   function ask(question) {
     const text = question.trim()
-    if (!text || loading) return
+    if (!text || busyRef.current) return
+    busyRef.current = true
     setInput('')
     setMessages(current => [...current, { role: 'user', text }])
     setLoading(true)
-    window.setTimeout(() => {
-      setMessages(current => [...current, { role: 'assistant', text: getReply(text, expenses, user, hideAmounts) }])
+    replyTimer.current = window.setTimeout(() => {
+      setMessages(current => [...current, { role: 'assistant', text: getReply(text, expenses, wallets, user, hideAmounts) }])
       setLoading(false)
-    }, 320)
+      busyRef.current = false
+    }, CHAT_REPLY_DELAY)
   }
   return <div className={`ledgerly-chat ${open ? 'is-open' : ''}`}><button className="ledgerly-chat-toggle" type="button" onClick={togglePanel} aria-label={open ? 'Close Ledgerly assistant' : 'Open Ledgerly assistant'} title="Ledgerly assistant"><span className="ledgerly-ai-loader" aria-hidden="true"><span>A</span><span>I</span><i /></span><span className="ledgerly-chat-label">{open ? 'Close' : 'Ask Ledgerly'}</span></button>{panelMounted && <section className={`ledgerly-chat-panel ${open ? 'is-visible' : 'is-closing'}`} aria-label="Ledgerly assistant"><header><div><span className="eyebrow">Ledgerly assistant</span><strong>Spending companion</strong></div><button type="button" onClick={togglePanel} aria-label="Close assistant">×</button></header><div className="ledgerly-chat-messages">{messages.map((message, index) => <div className={`ledgerly-chat-message ${message.role}`} key={`${message.role}-${index}`}>{message.text}</div>)}{loading && <div className="ledgerly-chat-message assistant typing-indicator" aria-label="Ledgerly assistant is typing"><i /><i /><i /></div>}</div><form onSubmit={event => { event.preventDefault(); ask(input) }}><input value={input} onChange={event => setInput(event.target.value)} placeholder="Ask Ledgerly anything" aria-label="Ask Ledgerly" /><button type="submit" disabled={!input.trim() || loading} aria-label="Send message">Send</button></form></section>}</div>
 }
